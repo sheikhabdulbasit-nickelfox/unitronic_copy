@@ -1,0 +1,3 @@
+export function useHomeController() {
+  return {}
+}
