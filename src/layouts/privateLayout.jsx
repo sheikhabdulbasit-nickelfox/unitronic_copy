@@ -1,6 +1,6 @@
-"use client"
-import * as React from "react"
-import { styled } from "@mui/material/styles"
+"use client";
+import * as React from "react";
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Drawer,
@@ -9,17 +9,27 @@ import {
   ListItemIcon,
   Divider,
   ListItemText,
-  ListItemButton
-} from "@mui/material"
-import { DashboardMenus } from "@local/constants/dashboardMenu"
-import { useStyles } from "./privateLayoutStyles"
-import LogoutIcon from "@mui/icons-material/Logout"
-import { useCookies } from "react-cookie"
-import { CookieKeys, CookieOptions } from "@local/constants/cookieKeys"
-import { useRouter } from "next/navigation"
-import { useIsLoggedIn } from "@local/hooks/state"
+  ListItemButton,
+} from "@mui/material";
+import { DashboardMenus } from "@local/constants/dashboardMenu";
+import { useStyles } from "./privateLayoutStyles";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useCookies } from "react-cookie";
+import { CookieKeys, CookieOptions } from "@local/constants/cookieKeys";
+import { useRouter } from "next/navigation";
+import { useIsLoggedIn } from "@local/hooks/state";
+import { usePathname } from "next/navigation";
+import { useTheme } from "@mui/system";
+import { useCommonStyles } from "@local/app/auth/commonStyles";
+import PlusIcon from "@local/assets/icons/plus";
+import MinusIcon from "@local/assets/icons/minus";
+import Logo from "@local/assets/images/logos/unitronics_logo.png";
+import Image from "next/image";
+import ReusableCard from "@local/components/ReusableCard";
+import QuestionIcon from "@local/assets/icons/questionMark.png";
+import Button from "@local/components/Button";
 
-const drawerWidth = 270
+const drawerWidth = 300;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -27,18 +37,18 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: `-${drawerWidth}px`,
     ...(open && {
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen
+        duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0
-    })
+      marginLeft: 0,
+    }),
   })
-)
+);
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -47,76 +57,124 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   height: "100px",
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: "center"
-}))
+  justifyContent: "center",
+}));
 
 export default function PrivateLayout({ children }) {
-  const router = useRouter()
-  const styles = useStyles()
-  const currentRoute = router.pathname
-  const isLoggedIn = useIsLoggedIn()
+  const router = useRouter();
+  const styles = useStyles();
+  const commonStyles = useCommonStyles();
+  const currentRoute = usePathname();
+  const isLoggedIn = useIsLoggedIn();
   // eslint-disable-next-line no-unused-vars
-  const [cookies, setCookie, removeCookie] = useCookies([CookieKeys.Auth])
+  const [cookies, setCookie, removeCookie] = useCookies([CookieKeys.Auth]);
 
   React.useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   React.useEffect(() => {
     if (!isLoggedIn) {
-      router.replace("/auth/login", "/auth/login")
+      router.replace("/auth/login", "/auth/login");
     }
-  }, [isLoggedIn, router])
+  }, [isLoggedIn, router]);
 
   const handleLogout = () => {
-    removeCookie(CookieKeys.Auth, CookieOptions)
-  }
+    removeCookie(CookieKeys.Auth, CookieOptions);
+  };
 
   const navigate = (route) => {
-    router.push(route)
-  }
+    router.push(route);
+  };
 
-  const activeMenu = (item) => currentRoute?.includes(item.route)
+  const activeMenu = (item) => {
+    return currentRoute?.includes(item.route);
+  };
+  const theme = useTheme();
 
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer sx={styles.drawer} variant="persistent" anchor="left" open={true}>
         <List>
-          <DrawerHeader>
-            <Typography sx={styles.drawerHeader} variant="h4">
-              {process.env.NEXT_PUBLIC_APP_NAME}
-            </Typography>
+          <DrawerHeader className="pl-0">
+            <Image src={Logo} />
           </DrawerHeader>
-          <Divider sx={styles.divider} />
+
           {DashboardMenus.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeMenu(item);
             return (
               <ListItemButton
-                sx={activeMenu(item) ? styles.activeListItem : styles.listItem}
+                sx={isActive ? styles.activeListItem : styles.listItem}
                 key={item.alias}
-                onClick={() => navigate(item.route)}>
-                <ListItemIcon sx={activeMenu(item) ? styles.iconActive : styles.icon}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText>
-                  <Typography sx={styles.listItemText}>{item.title}</Typography>
-                </ListItemText>
+                onClick={() => navigate(item.route)}
+              >
+                <Box sx={commonStyles.justifySpaceBetween}>
+                  <>
+                    <ListItemIcon
+                      sx={isActive ? styles.iconActive : styles.icon}
+                    >
+                      <Icon
+                        color={
+                          isActive
+                            ? theme.palette.primary.main
+                            : theme.palette.primary.white
+                        }
+                      />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography
+                        sx={
+                          isActive
+                            ? styles.listItemTextActive
+                            : styles.listItemText
+                        }
+                      >
+                        {item.title}
+                      </Typography>
+                    </ListItemText>
+                  </>
+                  {item.title !== "Home" && (
+                    <Box sx={isActive ? styles.minusSign : styles.plusSign}>
+                      {isActive ? (
+                        <MinusIcon color={theme.palette.primary.white} />
+                      ) : (
+                        <PlusIcon color={theme.palette.primary.white} />
+                      )}
+                    </Box>
+                  )}
+                </Box>
               </ListItemButton>
-            )
+            );
           })}
         </List>
-        <List sx={styles.logout}>
-          <Divider sx={styles.divider} />
-          <ListItemButton onClick={handleLogout}>
-            <ListItemIcon sx={styles.icon}>
-              <LogoutIcon color="secondary" />
-            </ListItemIcon>
-            <ListItemText>
-              <Typography sx={styles.listItemText}>Logout</Typography>
-            </ListItemText>
-          </ListItemButton>
-        </List>
+        <ReusableCard>
+          <Box sx={commonStyles.flexColumn}>
+            <Box sx={commonStyles.flexRow} className="mb-5">
+              <Image className="h-[42px] w-[42px]" src={QuestionIcon} />
+              <Box
+                sx={[commonStyles.flexColumn, styles.supportCard]}
+                className="ml-5"
+              >
+                <Typography
+                  variant="inputField"
+                  color={theme.palette.primary.white}
+                >
+                  Need help?
+                </Typography>
+                <Typography
+                  variant="secondaryBodyText"
+                  color={theme.palette.text.greyText}
+                >
+                  Please check our docs
+                </Typography>
+              </Box>
+            </Box>
+            <Button variant="contained">Get Support</Button>
+          </Box>
+        </ReusableCard>
       </Drawer>
       <Main open={true}>{children}</Main>
     </Box>
-  )
+  );
 }

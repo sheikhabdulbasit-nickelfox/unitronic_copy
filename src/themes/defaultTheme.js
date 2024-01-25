@@ -46,7 +46,7 @@ export const defaultTheme = {
 
   typography: {
     fontFamily:
-      "'PlusJakartaSans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+      "'PlusJakartaSans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important",
     title: {
       fontSize: 40,
       lineHeight: 74 / 34,
@@ -66,6 +66,11 @@ export const defaultTheme = {
       fontSize: 20,
       lineHeight: 48 / 26,
       fontWeight: 600,
+    },
+    boldH3: {
+      fontSize: 20,
+      lineHeight: 48 / 26,
+      fontWeight: 700,
     },
     h4: {
       fontSize: 20,
