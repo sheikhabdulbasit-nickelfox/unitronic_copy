@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <Providers>
         <ThemeProviders>
           <html lang="en">
-            <body className="bg-[#f5f6f8] !m-0">
+            <body className="bg-body-main !m-0">
               <Wrapper>{children}</Wrapper>
             </body>
           </html>

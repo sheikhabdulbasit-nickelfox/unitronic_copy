@@ -17,6 +17,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        body: {
+          main: `#0F0F13`,
+        },
         primary: {
           main: "#ED1C24",
           black: "#000000",

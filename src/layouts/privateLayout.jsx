@@ -99,7 +99,20 @@ export default function PrivateLayout({ children }) {
           <DrawerHeader className="pl-0">
             <Image src={Logo} />
           </DrawerHeader>
-
+          <ReusableCard
+            className="bg-gradient-to-r from-[#494949] to-[#130F0F] h-[82px] mb-5"
+            sx={styles.accountCard}
+          >
+            <Typography variant="chipsText" color={theme.palette.text.greyText}>
+              Your Account Balance
+            </Typography>
+            <Box className="flex flex-row justify-between">
+              <Typography variant="boldH3" color={theme.palette.primary.white}>
+                2000.00 CR
+              </Typography>
+              <Button variant="text">+ Add</Button>
+            </Box>
+          </ReusableCard>
           {DashboardMenus.map((item) => {
             const Icon = item.icon;
             const isActive = activeMenu(item);
@@ -174,7 +187,9 @@ export default function PrivateLayout({ children }) {
           </Box>
         </ReusableCard>
       </Drawer>
-      <Main open={true}>{children}</Main>
+      <Main className="bg-black" open={true}>
+        {children}
+      </Main>
     </Box>
   );
 }
