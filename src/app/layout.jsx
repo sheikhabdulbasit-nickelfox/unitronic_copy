@@ -1,19 +1,24 @@
-"use client"
-import CommonLayout from "@local/layouts/commonLayout"
-import PrivateLayout from "@local/layouts/privateLayout"
-import PublicLayout from "@local/layouts/publicLayout"
-import Providers from "@local/redux/Providers"
-import ThemeProviders from "@local/themes/ThemeProviders"
-import "../styles/globals.css"
-import { CookiesProvider } from "react-cookie"
-import { usePathname } from "next/navigation"
+"use client";
+import CommonLayout from "@local/layouts/commonLayout";
+import PrivateLayout from "@local/layouts/privateLayout";
+import PublicLayout from "@local/layouts/publicLayout";
+import Providers from "@local/redux/Providers";
+import ThemeProviders from "@local/themes/ThemeProviders";
+import "../styles/globals.css";
+import { CookiesProvider } from "react-cookie";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
-  const path = usePathname()
-  const isPublic = path?.includes("/auth/")
-  const isPrivate = path?.includes("/user/")
+  const path = usePathname();
+  const isPublic = path?.includes("/auth/");
+  const isPrivate = !path?.includes("/auth/");
 
-  const Wrapper = isPublic ? PublicLayout : isPrivate ? PrivateLayout : CommonLayout
+  const Wrapper = isPublic
+    ? PublicLayout
+    : isPrivate
+    ? PrivateLayout
+    : CommonLayout;
+
   return (
     <CookiesProvider>
       <Providers>
@@ -26,5 +31,5 @@ export default function RootLayout({ children }) {
         </ThemeProviders>
       </Providers>
     </CookiesProvider>
-  )
+  );
 }
